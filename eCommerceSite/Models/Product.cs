@@ -25,6 +25,7 @@ namespace eCommerceSite.Models
         /// The retail price of the product as US currency
         /// </summary>
         [DataType(DataType.Currency)]
+        [Display(Name = "Retail Price")]
         public double Price { get; set; }
 
         /// <summary>
