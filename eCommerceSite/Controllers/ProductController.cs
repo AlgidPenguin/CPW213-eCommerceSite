@@ -42,7 +42,6 @@ namespace eCommerceSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Product p)
         {
-
             if(ModelState.IsValid)
             {
                 // Add to DB
@@ -50,6 +49,7 @@ namespace eCommerceSite.Controllers
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"{p.Title} was added successfully.";
+
                 // redirect back to catalog page
                 return RedirectToAction("Index");
             }
