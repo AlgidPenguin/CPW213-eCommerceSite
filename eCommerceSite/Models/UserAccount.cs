@@ -47,4 +47,14 @@ namespace eCommerceSite.Models
         [DataType(DataType.Date)] // Time ignored
         public DateTime? DateOfBirth { get; set; }
     }
+
+    public class LoginViewModel
+    {
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 }
