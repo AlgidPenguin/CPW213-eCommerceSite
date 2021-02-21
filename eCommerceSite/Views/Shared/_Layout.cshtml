@@ -1,4 +1,29 @@
-﻿<!DOCTYPE html>
+﻿
+@inject IHttpContextAccessor sessionData
+@inject eCommerceSite.Data.ProductContext db 
+@{ 
+    int? userId = sessionData.HttpContext.Session.GetInt32("UserId");
+    string username = null;
+    if(userId.HasValue)
+    {
+        string userNameFromSession = sessionData.HttpContext.Session.GetString("Username");
+        if (userNameFromSession == null)
+        {
+            username = (from u in db.UserAccounts
+                        where u.UserId == userId
+                        select u.Username).SingleOrDefault();
+
+            sessionData.HttpContext.Session.SetString("Username", username);
+        }
+
+        else
+        {
+            username = userNameFromSession;
+        }
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,11 +52,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Product Catalog</a>
                         </li>
-                        <li class="nav-item">
+                        @if (userId == null)
+                        {
+                             <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="User" asp-action="Register">
                                 Register
                             </a>
                         </li>
+                             <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="User" asp-action="Login">
+                                Login
+                            </a>
+                        </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark disabled">
+                                    Welcome @username!
+                                </a>
+                                
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
