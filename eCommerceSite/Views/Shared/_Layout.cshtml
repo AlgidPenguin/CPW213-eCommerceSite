@@ -1,7 +1,26 @@
 ﻿
 @inject IHttpContextAccessor sessionData
+@inject eCommerceSite.Data.ProductContext db 
 @{ 
     int? userId = sessionData.HttpContext.Session.GetInt32("UserId");
+    string username = null;
+    if(userId.HasValue)
+    {
+        string userNameFromSession = sessionData.HttpContext.Session.GetString("Username");
+        if (userNameFromSession == null)
+        {
+            username = (from u in db.UserAccounts
+                        where u.UserId == userId
+                        select u.Username).SingleOrDefault();
+
+            sessionData.HttpContext.Session.SetString("Username", username);
+        }
+
+        else
+        {
+            username = userNameFromSession;
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -50,7 +69,7 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark disabled">
-                                    Welcome Back!
+                                    Welcome @username!
                                 </a>
                                 
                             </li>
