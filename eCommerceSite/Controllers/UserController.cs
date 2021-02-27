@@ -66,6 +66,8 @@ namespace eCommerceSite.Controllers
                 _context.UserAccounts.Add(acc);
                 await _context.SaveChangesAsync();
 
+                LogUserIn(acc.UserId);
+
                 // redirect to home page
                 return RedirectToAction("Index", "Home");
             }
@@ -86,7 +88,7 @@ namespace eCommerceSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -104,7 +106,7 @@ namespace eCommerceSite.Controllers
             //                userAcc.Email == model.Username) &&
             //                userAcc.Password == model.Password).SingleOrDefaultAsync();
 
-            if(account == null)
+            if (account == null)
             {
                 // credentials didnt match
 
@@ -115,9 +117,14 @@ namespace eCommerceSite.Controllers
             }
 
             // Log in user to website
-            HttpContext.Session.SetInt32("UserId", account.UserId);
+            LogUserIn(account.UserId);
 
             return RedirectToAction("Index", "Home");
+        }
+
+        private void LogUserIn(int accountId)
+        {
+            HttpContext.Session.SetInt32("UserId", accountId);
         }
 
         public IActionResult Logout()
