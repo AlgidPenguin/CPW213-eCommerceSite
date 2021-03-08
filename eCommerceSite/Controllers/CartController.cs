@@ -37,13 +37,19 @@ namespace eCommerceSite.Controllers
             // Get existing cart items
             string existingItems = _httpContext.HttpContext.Request.Cookies[CartCookie];
 
+            List<Product> cartProducts = new List<Product>();
+
             if(existingItems != null)
             {
-
+                cartProducts = JsonConvert.DeserializeObject<List<Product>>(existingItems);
             }
 
-            // Add product to the cart cookie
-            string data = JsonConvert.SerializeObject(p);
+            // Add current product to existing cart
+            cartProducts.Add(p);
+
+            // Add product list to the cart cookie
+            string data = JsonConvert.SerializeObject(cartProducts);
+
             CookieOptions options = new CookieOptions()
             {
                 Expires = DateTime.Now.AddYears(1),
@@ -60,7 +66,11 @@ namespace eCommerceSite.Controllers
         public IActionResult Summary()
         {
             // Display all products currently in the shopping cart cookie
-            return View();
+            string cookieData = _httpContext.HttpContext.Request.Cookies["CartCookie"];
+
+            List<Product> cartProducts = JsonConvert.DeserializeObject<List<Product>>(cookieData);
+
+            return View(cartProducts);
         }
     }
 }
